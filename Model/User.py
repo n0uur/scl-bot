@@ -16,6 +16,7 @@ class User:
         self.user_id = user_id
         self.state = self.STATE_NORMAL
 
+        self.ssh_session = None # current router remote session
         self.current_router = None # current router id
         self.current_config = None # current config on router for SNMP module
         self.is_waiting_for_config = False # waiting for input from user to config router
