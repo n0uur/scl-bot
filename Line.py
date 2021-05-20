@@ -88,7 +88,16 @@ class Line():
         else:
             pass
 
-        cls.line_bot_api.reply_message(event['replyToken'], TextSendMessage(text="ไม่พบคำสั่ง หรือยังไม่สามารถใช้งานได้ในขณะนี้"))
+        cls.line_bot_api.reply_message(event['replyToken'],
+            TextSendMessage(
+                text="ไม่พบคำสั่ง หรือยังไม่สามารถใช้งานได้ในขณะนี้",
+                quick_reply=QuickReply(
+                                items=[
+                                    QuickReplyButton(
+                                        action=MessageAction(
+                                            label="ดูรายการคำสั่งทั้งหมด", text="help")
+                                    )
+            ])))
 
         return False
 
