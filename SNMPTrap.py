@@ -1,3 +1,0 @@
-"""
-SNMP Trap receiver module
-"""
