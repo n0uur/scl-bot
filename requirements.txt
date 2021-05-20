@@ -2,3 +2,4 @@ Flask==2.0.0
 line_bot_sdk==1.19.0
 pysnmp==4.4.12
 python-dotenv==0.17.1
+pyping
