@@ -7,108 +7,87 @@ import datetime
 
 COMUNITY_CODE = 'sclbot'
 IP_ADDR_RT1 = '10.0.15.7'
+DICT_GET_STATUS = {"1": "up", "2": "down"}
+DICT_SET_STATUS = {"up": "1", "down": "2"}
+
+
+def getSNMP(oid):
+    iterator = getCmd(SnmpEngine(),
+                      CommunityData(COMUNITY_CODE),
+                      UdpTransportTarget((IP_ADDR_RT1, 161)),
+                      ContextData(),
+                      ObjectType(ObjectIdentity(oid))
+                      )
+
+    errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
+
+    for varBind in varBinds:  # SNMP response contents
+        result = [x.prettyPrint() for x in varBind][-1]
+
+    return result
+
+
+def setSNMP(oid, value):
+    iterator = setCmd(SnmpEngine(),
+                      CommunityData(COMUNITY_CODE),
+                      UdpTransportTarget((IP_ADDR_RT1, 161)),
+                      ContextData(),
+                      ObjectType(ObjectIdentity(oid), value)
+                      )
+
+    errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
+
+    for varBind in varBinds:  # SNMP response contents
+        result = [x.prettyPrint() for x in varBind][-1]
+
+    return result
 
 
 def getRouterHostName():
-    iterator = getCmd(SnmpEngine(),
-                      CommunityData(COMUNITY_CODE),
-                      UdpTransportTarget((IP_ADDR_RT1, 161)),
-                      ContextData(),
-                      ObjectType(ObjectIdentity('.1.3.6.1.2.1.1.5.0'))
-                      )
+    return getSNMP('.1.3.6.1.2.1.1.5.0')
 
-    errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
 
-    for varBind in varBinds:  # SNMP response contents
-        routerName = [x.prettyPrint() for x in varBind][-1]
-
-    return routerName
+def setRouterHostName():
+    newHostName = input("NewHostName: ")
+    return setSNMP('.1.3.6.1.2.1.1.5.0', newHostName)
 
 
 def getRouterUptime():
-    iterator = getCmd(SnmpEngine(),
-                      CommunityData(COMUNITY_CODE),
-                      UdpTransportTarget((IP_ADDR_RT1, 161)),
-                      ContextData(),
-                      ObjectType(ObjectIdentity('.1.3.6.1.2.1.1.3.0'))
-                      )
-
-    errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
-
-    for varBind in varBinds:  # SNMP response contents
-        routerUptime = [x.prettyPrint() for x in varBind][-1]
-
+    routerUptime = getSNMP('.1.3.6.1.2.1.1.3.0')
     routerUptime = datetime.timedelta(seconds=int(routerUptime) / 100)
-
     return routerUptime
 
 
 def getInterfaceCount():
-    iterator = getCmd(SnmpEngine(),
-                      CommunityData(COMUNITY_CODE),
-                      UdpTransportTarget((IP_ADDR_RT1, 161)),
-                      ContextData(),
-                      ObjectType(ObjectIdentity('.1.3.6.1.2.1.2.1.0'))
-                      )
-
-    errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
-
-    for varBind in varBinds:  # SNMP response contents
-        interfaceCount = [x.prettyPrint() for x in varBind][-1]
-
-    return int(interfaceCount)
+    return int(getSNMP('.1.3.6.1.2.1.2.1.0'))
 
 
 def getInterfaceDescr(index):
-    iterator = getCmd(SnmpEngine(),
-                       CommunityData(COMUNITY_CODE),
-                       UdpTransportTarget((IP_ADDR_RT1, 161)),
-                       ContextData(),
-                       ObjectType(ObjectIdentity(
-                           ".1.3.6.1.2.1.2.2.1.2.%d" % index))
-                       )
-    errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
+    return getSNMP(".1.3.6.1.2.1.2.2.1.2.%d" % index)
 
-    for varBind in varBinds:  # SNMP response contents
-        interfaceDescr = [x.prettyPrint() for x in varBind][-1]
-
-    return interfaceDescr
 
 def getInterfaceAdminStatus(index):
-    iterator = getCmd(SnmpEngine(),
-                       CommunityData(COMUNITY_CODE),
-                       UdpTransportTarget((IP_ADDR_RT1, 161)),
-                       ContextData(),
-                       ObjectType(ObjectIdentity(
-                           ".1.3.6.1.2.1.2.2.1.7.%d" % index))
-                       )
-    errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
+    return DICT_GET_STATUS[getSNMP(".1.3.6.1.2.1.2.2.1.7.%d" % index)]
 
-    for varBind in varBinds:  # SNMP response contents
-        interfaceAdminStatus = [x.prettyPrint() for x in varBind][-1]
-    dict = {"1":"up", "2":"down"}
-    return dict[interfaceAdminStatus]
+
+def setInterfaceAdminStatus():
+    selectedInterface = input("Interface: ")
+    interfaceStatus = input("Status: ")
+    return setSNMP(".1.3.6.1.2.1.2.2.1.7." + selectedInterface, Integer(DICT_SET_STATUS[interfaceStatus]))
+
 
 def getInterfaceLineStatus(index):
-    iterator = getCmd(SnmpEngine(),
-                       CommunityData(COMUNITY_CODE),
-                       UdpTransportTarget((IP_ADDR_RT1, 161)),
-                       ContextData(),
-                       ObjectType(ObjectIdentity(
-                           ".1.3.6.1.2.1.2.2.1.8.%d" % index))
-                       )
-    errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
+    return DICT_GET_STATUS[getSNMP(".1.3.6.1.2.1.2.2.1.8.%d" % index)]
 
-    for varBind in varBinds:  # SNMP response contents
-        interfaceAdminStatus = [x.prettyPrint() for x in varBind][-1]
-    dict = {"1":"up", "2":"down"}
-    return dict[interfaceAdminStatus]
 
 def main():
+    setRouterHostName()
+    setInterfaceAdminStatus()
     print("RouterHostName:", getRouterHostName())
     print("RouterUptime:", getRouterUptime())
     for i in range(1, getInterfaceCount()):
-        print("RouterInterface {0}:{1}\n\tAdmin Status: {2}\n\tOper Status: {3}".format(i, getInterfaceDescr(i), getInterfaceAdminStatus(i), getInterfaceLineStatus(i)))
+        print("RouterInterface {0}:{1}\n\tAdmin Status: {2}\n\tOper Status: {3}".format(
+            i, getInterfaceDescr(i), getInterfaceAdminStatus(i), getInterfaceLineStatus(i)))
 
 
 main()
