@@ -1,2 +1,5 @@
 .env
 routers.yml
+venv/*
+.vscode/*
+.idea/*
