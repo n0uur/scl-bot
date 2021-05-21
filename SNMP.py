@@ -2,64 +2,73 @@
 SNMP Manager Module
 """
 
+import sys
 from pysnmp.hlapi import *
 import datetime
 
-COMUNITY_CODE = 'sclbot'
-IP_ADDR_RT1 = '10.0.15.7'
+COMUNITY_CODE = "sclbot"
+RT_IP_ADDR = {"1": "10.0.15.7"}
 DICT_GET_STATUS = {"1": "up", "2": "down"}
 DICT_SET_STATUS = {"up": "1", "down": "2"}
 
 
 def getSNMP(oid):
-    iterator = getCmd(SnmpEngine(),
-                      CommunityData(COMUNITY_CODE),
-                      UdpTransportTarget((IP_ADDR_RT1, 161)),
-                      ContextData(),
-                      ObjectType(ObjectIdentity(oid))
-                      )
+    try:
+        iterator = getCmd(SnmpEngine(),
+                        CommunityData(COMUNITY_CODE),
+                        UdpTransportTarget((RT_IP_ADDR["1"], 161)),
+                        ContextData(),
+                        ObjectType(ObjectIdentity(oid))
+                        )
 
-    errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
+        errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
 
-    for varBind in varBinds:  # SNMP response contents
-        result = [x.prettyPrint() for x in varBind][-1]
+        for varBind in varBinds:  # SNMP response contents
+            result = [x.prettyPrint() for x in varBind][-1]
 
-    return result
+        return result
+    except:
+        print("Connection to router timeout!")
+        sys.exit()
 
 
 def setSNMP(oid, value):
-    iterator = setCmd(SnmpEngine(),
-                      CommunityData(COMUNITY_CODE),
-                      UdpTransportTarget((IP_ADDR_RT1, 161)),
-                      ContextData(),
-                      ObjectType(ObjectIdentity(oid), value)
-                      )
+    try:
+        iterator = setCmd(SnmpEngine(),
+                        CommunityData(COMUNITY_CODE),
+                        UdpTransportTarget((RT_IP_ADDR["1"], 161)),
+                        ContextData(),
+                        ObjectType(ObjectIdentity(oid), value)
+                        )
 
-    errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
+        errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
 
-    for varBind in varBinds:  # SNMP response contents
-        result = [x.prettyPrint() for x in varBind][-1]
+        for varBind in varBinds:  # SNMP response contents
+            result = [x.prettyPrint() for x in varBind][-1]
 
-    return result
+        return result
+    except:
+        print("Connection to router timeout!")
+        sys.exit()
 
 
 def getRouterHostName():
-    return getSNMP('.1.3.6.1.2.1.1.5.0')
+    return getSNMP(".1.3.6.1.2.1.1.5.0")
 
 
 def setRouterHostName():
     newHostName = input("NewHostName: ")
-    return setSNMP('.1.3.6.1.2.1.1.5.0', newHostName)
+    return setSNMP(".1.3.6.1.2.1.1.5.0", newHostName)
 
 
 def getRouterUptime():
-    routerUptime = getSNMP('.1.3.6.1.2.1.1.3.0')
+    routerUptime = getSNMP(".1.3.6.1.2.1.1.3.0")
     routerUptime = datetime.timedelta(seconds=int(routerUptime) / 100)
     return routerUptime
 
 
 def getInterfaceCount():
-    return int(getSNMP('.1.3.6.1.2.1.2.1.0'))
+    return int(getSNMP(".1.3.6.1.2.1.2.1.0"))
 
 
 def getInterfaceDescr(index):
@@ -81,8 +90,8 @@ def getInterfaceLineStatus(index):
 
 
 def main():
-    setRouterHostName()
-    setInterfaceAdminStatus()
+    # setRouterHostName()
+    # setInterfaceAdminStatus()
     print("RouterHostName:", getRouterHostName())
     print("RouterUptime:", getRouterUptime())
     for i in range(1, getInterfaceCount()):
