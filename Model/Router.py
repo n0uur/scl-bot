@@ -43,7 +43,7 @@ class Router:
         if cls.routers is None:
             cls.loadRouters()
         for router in cls.routers:
-            if router.name == router_id:
+            if router.name.lower() == router_id.lower():
                 return router
         return None
 
