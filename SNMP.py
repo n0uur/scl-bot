@@ -90,7 +90,7 @@ def getInterfaceLineStatus(index):
     return DICT_GET_STATUS[getSNMP(".1.3.6.1.2.1.2.2.1.8.%d" % index)]
 
 
-def main():
+def getRouterSNMP(ipAddress, communityCode):
     # setRouterHostName()
     # setInterfaceAdminStatus()
     print("RouterHostName:", getRouterHostName())
@@ -99,5 +99,6 @@ def main():
         print("RouterInterface {0}:{1}\n\tAdmin Status: {2}\n\tOper Status: {3}".format(
             i, getInterfaceDescr(i), getInterfaceAdminStatus(i), getInterfaceLineStatus(i)))
 
-
-main()
+# for debugging
+if __name__ == "__main__":
+    getRouterSNMP("10.0.15.7")
