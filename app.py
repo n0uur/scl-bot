@@ -4,18 +4,11 @@ Mainly use for receive Line bot webhooks.
 """
 
 import os
-from dotenv import load_dotenv
 
+from dotenv import load_dotenv
 from flask import Flask, request
 
-from Model.User import User
-
-from linebot import *
-from linebot.models import *
-
 from Line import Line
-
-import json
 
 ################## INIT ##################
 
@@ -27,9 +20,13 @@ secret = os.environ.get("LINE_CHANNEL_SECRET")
 
 Line.setBotApi(access_token, secret)
 
-################## #### ##################
 
 ################## ROUTE #################
+
+@app.route("/")
+def home():
+    return "hello flask :)", 200
+
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -38,6 +35,7 @@ def callback():
         event = body['events'][i]
         _ = Line.event(event)
     return '0', 200
+
 
 ##########################################
 
