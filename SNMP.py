@@ -2,11 +2,12 @@
 SNMP Manager Module
 """
 
-import sys
-from pysnmp.hlapi import *
 import datetime
+import sys
 
-COMUNITY_CODE = "sclbot"
+from pysnmp.hlapi import *
+
+COMMUNITY_CODE = "sclbot"
 RT_IP_ADDR = {"1": "10.0.15.7"}
 DICT_GET_STATUS = {"1": "up", "2": "down"}
 DICT_SET_STATUS = {"up": "1", "down": "2"}
@@ -15,11 +16,11 @@ DICT_SET_STATUS = {"up": "1", "down": "2"}
 def getSNMP(oid):
     try:
         iterator = getCmd(SnmpEngine(),
-                        CommunityData(COMUNITY_CODE),
-                        UdpTransportTarget((RT_IP_ADDR["1"], 161)),
-                        ContextData(),
-                        ObjectType(ObjectIdentity(oid))
-                        )
+                          CommunityData(COMMUNITY_CODE),
+                          UdpTransportTarget((RT_IP_ADDR["1"], 161)),
+                          ContextData(),
+                          ObjectType(ObjectIdentity(oid))
+                          )
 
         errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
 
@@ -35,11 +36,11 @@ def getSNMP(oid):
 def setSNMP(oid, value):
     try:
         iterator = setCmd(SnmpEngine(),
-                        CommunityData(COMUNITY_CODE),
-                        UdpTransportTarget((RT_IP_ADDR["1"], 161)),
-                        ContextData(),
-                        ObjectType(ObjectIdentity(oid), value)
-                        )
+                          CommunityData(COMMUNITY_CODE),
+                          UdpTransportTarget((RT_IP_ADDR["1"], 161)),
+                          ContextData(),
+                          ObjectType(ObjectIdentity(oid), value)
+                          )
 
         errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
 
