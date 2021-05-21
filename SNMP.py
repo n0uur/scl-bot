@@ -54,9 +54,8 @@ def getRouterHostName(ip, communityCode):
     return getSNMP(ip, communityCode, '.1.3.6.1.2.1.1.5.0')
 
 
-def setRouterHostName(ip, communityCode):
-    newHostName = input("NewHostName: ")
-    return setSNMP(ip, communityCode, '.1.3.6.1.2.1.1.5.0', newHostName)
+def setRouterHostName(ip, communityCode, hostname):
+    return setSNMP(ip, communityCode, '.1.3.6.1.2.1.1.5.0', hostname)
 
 
 def getRouterUptime(ip, communityCode):
@@ -77,11 +76,9 @@ def getInterfaceAdminStatus(ip, communityCode, index):
     return DICT_GET_STATUS[getSNMP(ip, communityCode, ".1.3.6.1.2.1.2.2.1.7.%d" % index)]
 
 
-def setInterfaceAdminStatus(ip, communityCode):
-    selectedInterface = input("Interface: ")
-    interfaceStatus = input("Status: ")
-    return setSNMP(ip, communityCode, ".1.3.6.1.2.1.2.2.1.7." + selectedInterface,
-                   Integer(DICT_SET_STATUS[interfaceStatus]))
+def setInterfaceAdminStatus(ip, communityCode, interface, status):
+    return setSNMP(ip, communityCode, ".1.3.6.1.2.1.2.2.1.7." + interface,
+                   Integer(DICT_SET_STATUS[status]))
 
 
 def getInterfaceLineStatus(ip, communityCode, index):
