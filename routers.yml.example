@@ -1,15 +1,17 @@
 # routers:
-# -   name: <Router Name>       # must be unique
-#     ip: 1.2.3.4               # router management IP
-#     snmp_read: sclbot         # SNMP Community READ
-#     snmp_write: sclbot        # SNMP Community WRITE
-#     ssh_username: ...         # SSH Username
-#     ssh_password: ...         # SSH Password
-#     enable_password: ...      # router enable password
+# -   name: <Router Name>           # must be unique
+#     hostname: <Router Hostname>   # router hostname
+#     ip: 1.2.3.4                   # router management IP
+#     snmp_read: sclbot             # SNMP Community READ
+#     snmp_write: sclbot            # SNMP Community WRITE
+#     ssh_username: ...             # SSH Username
+#     ssh_password: ...             # SSH Password
+#     enable_password: ...          # router enable password
 
 routers:
 
 -   name: Example
+    hostname: Example
     ip: 1.2.3.4
     snmp_read: sclbot
     snmp_write: sclbot

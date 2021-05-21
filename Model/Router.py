@@ -11,6 +11,7 @@ class Router:
 
     def __init__(self, router_details):
         self.name = router_details['name']  # use as Id
+        self.hostname = router_details['hostname']
         self.ip = router_details['ip']
         self.snmp_read = router_details['snmp_read']
         self.snmp_write = router_details['snmp_write']
