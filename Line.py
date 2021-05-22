@@ -165,7 +165,7 @@ class Line:
                         ])
                         cls.line_bot_api.reply_message(event['replyToken'],
                                                        TemplateSendMessage(
-                                                           alt_text='ข้อความนีัแสดงได้เฉพาะบนโทรศัพท์มือถือ',
+                                                           alt_text='ข้อความนี้แสดงได้เฉพาะบนโทรศัพท์มือถือ',
                                                            template=carousel_template)
                                                        )
                         return True
@@ -396,7 +396,7 @@ class Line:
 
     @classmethod
     def sendReplyButton(cls, reply_token: str, title: str, text: str, actions: list, image: str = None,
-                        alt_text="ข้อความนีัแสดงได้เฉพาะบนโทรศัพท์มือถือ"):
+                        alt_text="ข้อความนี้แสดงได้เฉพาะบนโทรศัพท์มือถือ"):
         message = {
             "type": "buttons",
             "thumbnailImageUrl": "https://inwfile.com/s-aa/qct4vq.jpg" if image is None else image,
