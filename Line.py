@@ -11,6 +11,8 @@ from Model.Router import Router
 
 from SNMP import *
 
+from netmiko import ConnectHandler
+
 class Line:
     line_bot_api = None
     handler = None
@@ -62,7 +64,22 @@ class Line:
 
                 if user.state == User.STATE_REMOTE:
                     # todo: parse message to ssh session
-                    pass
+                    if message == "exit":
+                        statusText = "ปิดการเชื่อมต่อ Remote Console แล้ว"
+                        cls.line_bot_api.reply_message(event['replyToken'], TextSendMessage(text=statusText))
+
+                        user.state = User.STATE_NORMAL
+                        user.ssh_session.disconnect()
+                        user.ssh_session = None
+
+                        return True
+
+                    outputText = user.ssh_session.send_command(event['message']['text'])
+
+                    cls.line_bot_api.reply_message(event['replyToken'], TextSendMessage(text=outputText))
+
+                    return True
+
                 elif user.state == User.STATE_SETTING:
                     # todo: get config status and parse message to config router
 
@@ -204,8 +221,9 @@ class Line:
 
                             router_detail = getRouterSMMP(router.ip, router.snmp_read)
 
-                            replyText = "ℹ️ ข้อมูลสถานะ Router : " + router_detail['hostname'] + "\n" \
-                            + "⏱️เปิดใช้งานมาแล้ว : " + router_detail['uptime'].split('.')[0] + " ชั่วโมง\n\n 🌎 Interfaces:\n"
+                            replyText = "ℹ ข้อมูลสถานะ Router : " + router_detail['hostname'] + "\n" \
+                            + "⏱ เปิดใช้งานมาแล้ว : " + router_detail['uptime'].split('.')[0] + " ชั่วโมง" \
+                            + "\n⏱ Latency: %.2f ms\n\n 🌎 Interfaces:\n" % router.getPing()
                             for interface in router_detail['interfaces']:
                                 replyText += "- Interface %s : [สถานะ: %s]\n" % \
                                 (interface['name'], ("ปิดใช้งาน ⛔" if interface['admin_status'] == "down" else "ปกติ ✅" if interface['line_status'] == "up" else "ไม่มีการเชื่อมต่อ ⚠"))
@@ -322,7 +340,35 @@ class Line:
                             return True
 
                         elif command == "router remote":
-                            pass
+
+                            try:
+                                router = Router.getRouter(params[0])
+                                if router is None:
+                                    statusText = "ไม่พบ Router ที่ท่านเลือก"
+                                    cls.line_bot_api.reply_message(event['replyToken'], TextSendMessage(text=statusText))
+                                    return False
+
+                                # print(router.getConnectionInfo())
+
+                                net_connect = ConnectHandler(**router.getConnectionInfo())
+                                net_connect.enable()
+
+                                user.state = User.STATE_REMOTE
+                                user.ssh_session = net_connect
+
+                                statusText = "เชื่อมต่อกับ Console ของ Router แล้ว ท่านสามารถออกจากโหมดนี้ได้โดยใช้คำสั่ง \"exit\""
+                                cls.line_bot_api.reply_message(event['replyToken'], TextSendMessage(text=statusText))
+
+                                return True
+                            except:
+                                statusText = "ไม่สามารถเชื่อมต่อกับ Console ได้"
+                                cls.line_bot_api.reply_message(event['replyToken'], TextSendMessage(text=statusText))
+
+                                user.state = User.STATE_NORMAL
+                                user.ssh_session = None
+
+                                return False
+
 
                     # cls.sendReplyButton(event['replyToken'])
         elif event['type'] == "postback":

@@ -23,6 +23,19 @@ class Router:
         host = ping(self.ip, count=2)
         return host.is_alive
 
+    def getPing(self):
+        host = ping(self.ip, count=5)
+        return host.avg_rtt
+
+    def getConnectionInfo(self):
+        return {
+            'device_type': 'cisco_ios',
+            'host': self.ip,
+            'username': self.ssh_username,
+            'password': self.ssh_password,
+            'secret': self.enable_password,
+        }
+
     @classmethod
     def loadRouters(cls):
         # todo : read routers.yml file

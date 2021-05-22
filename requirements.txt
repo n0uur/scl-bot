@@ -4,3 +4,4 @@ pysnmp==4.4.12
 python-dotenv==0.17.1
 icmplib
 PyYAML
+netmiko
