@@ -351,7 +351,9 @@ class Line:
                                 # print(router.getConnectionInfo())
 
                                 net_connect = ConnectHandler(**router.getConnectionInfo())
-                                net_connect.enable()
+
+                                if len(router.enable_password) > 0:
+                                    net_connect.enable()
 
                                 user.state = User.STATE_REMOTE
                                 user.ssh_session = net_connect
