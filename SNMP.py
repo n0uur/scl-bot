@@ -2,9 +2,9 @@
 SNMP Manager Module
 """
 
-import sys
-from pysnmp.hlapi import *
 import datetime
+
+from pysnmp.hlapi import *
 
 DICT_GET_STATUS = {"1": "up", "2": "down"}
 DICT_SET_STATUS = {"up": "1", "down": "2"}
