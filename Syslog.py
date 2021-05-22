@@ -2,6 +2,7 @@
 Syslog receiver
 """
 
+from Line import Line
 import socketserver
 
 SYSLOG_PORT = 514
@@ -22,6 +23,7 @@ class SyslogHandler(socketserver.BaseRequestHandler):
             "hostname": hostName,
             "message": logMessage
         }
+        Line.broadcastSyslog(logDataDict)
         # print(logDataDict)
         # return logDataDict
 

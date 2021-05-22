@@ -409,6 +409,13 @@ class Line:
             TemplateSendMessage(template=message, alt_text=alt_text)
         )
 
+    @classmethod
+    def broadcastSyslog(cls, syslog):
+        message = "แจ้งเตือนจาก Router %s เวลา %s : %s" % (syslog['hostname'], syslog['time'], syslog['message'])
+        cls.line_bot_api.broadcast([
+            TextSendMessage(text=message)
+        ])
+
     @staticmethod
     def getEventInfo(event):
 
