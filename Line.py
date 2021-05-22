@@ -286,7 +286,7 @@ class Line:
                             ])
                             cls.line_bot_api.reply_message(event['replyToken'],
                                                            TemplateSendMessage(
-                                                               alt_text='ข้อความนีัแสดงได้เฉพาะบนโทรศัพท์มือถือ',
+                                                               alt_text='ข้อความนี้แสดงได้เฉพาะบนโทรศัพท์มือถือ',
                                                                template=carousel_template)
                                                            )
 
