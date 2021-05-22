@@ -31,12 +31,8 @@ class SyslogHandler(socketserver.BaseRequestHandler):
 # for debugging
 
 def startSyslog():
-    # try:
-        server = socketserver.UDPServer(("0.0.0.0", SYSLOG_PORT), SyslogHandler)
-        server.serve_forever()
-    # except Exception:
-    #     print("Something went wrong.. :(")
-
+    server = socketserver.UDPServer(("0.0.0.0", SYSLOG_PORT), SyslogHandler)
+    server.serve_forever()
 
 
 if __name__ == "__main__":
