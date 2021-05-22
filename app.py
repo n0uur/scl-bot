@@ -4,14 +4,15 @@ Mainly use for receive Line bot webhooks.
 """
 
 import os
+import threading
 
 from dotenv import load_dotenv
 from flask import Flask, request
 
+import Syslog
 from Line import Line
 
 ################## INIT ##################
-
 load_dotenv()
 
 app = Flask(__name__)
@@ -39,5 +40,9 @@ def callback():
 
 ##########################################
 
+
 if __name__ == "__main__":
-    app.run()
+    flaskThread = threading.Thread(target=app.run)
+    syslogThread = threading.Thread(target=Syslog.startSyslog)
+    flaskThread.start()
+    syslogThread.start()
