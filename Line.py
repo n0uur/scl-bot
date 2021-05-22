@@ -172,7 +172,7 @@ class Line:
 
                     elif message == "status":
                         # show system status
-                        is_syslog_online = False  # todo : get syslog server status ?
+                        is_syslog_online = True  # todo : get syslog server status ?... no it's just always online! maybe ?
                         statusText = "👋 สถานะระบบ\nสถานะบอท : 🟢 ปกติ\nสถานะ Syslog : " + (
                             "🟢 ปกติ" if is_syslog_online else "🔴 ปิด")
                         cls.line_bot_api.reply_message(event['replyToken'], TextSendMessage(text=statusText))
@@ -411,7 +411,7 @@ class Line:
 
     @classmethod
     def broadcastSyslog(cls, syslog):
-        message = "แจ้งเตือนจาก Router %s เวลา %s : %s" % (syslog['hostname'], syslog['time'], syslog['message'])
+        message = "แจ้งเตือนจาก Router %s เวลา %s : \n%s" % (syslog['hostname'], syslog['time'], syslog['message'])
         cls.line_bot_api.broadcast([
             TextSendMessage(text=message)
         ])
