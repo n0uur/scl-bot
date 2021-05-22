@@ -74,7 +74,10 @@ class Line:
 
                         return True
 
-                    outputText = user.ssh_session.send_command(event['message']['text'])
+                    try:
+                        outputText = user.ssh_session.send_command(event['message']['text'])
+                    except IOError:
+                        outputText = "คำสั่งไม่มีการตอบกลับ"
 
                     cls.line_bot_api.reply_message(event['replyToken'], TextSendMessage(text=outputText))
 
