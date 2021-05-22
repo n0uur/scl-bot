@@ -6,9 +6,9 @@ import logging
 from SNMP import getRouterHostName
 
 SYSLOG_PORT = 514
-SYSLOG_SERVER = "ip at your interface"
+SYSLOG_SERVER = "syslog server ip"
 ROUTER_IP = "router ip"
-COMMUNITY_CODE = "commu code"
+COMMUNITY_CODE = "community code"
 
 
 class SyslogHandler(socketserver.BaseRequestHandler):
@@ -17,7 +17,7 @@ class SyslogHandler(socketserver.BaseRequestHandler):
         logData = data.split("*")[-1].split(": ")
         # print(logData)
         logTime = logData[0]
-        hostName = getRouterHostName(ROUTER_IP, COMMUNITY_CODE).split(".")[0]
+        hostName = getRouterHostName(ROUTER_IP, COMMUNITY_CODE)
         logMessage = ""
         for i in logData[1:]:
             logMessage += i
