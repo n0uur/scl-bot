@@ -120,7 +120,7 @@ class Line:
 
                 elif user.state == User.STATE_NORMAL:
 
-                    if message == "help":
+                    if message == "help" or message == "?":
                         # show all commands
                         replyText = "👋 รายการคำสั่งที่ใช้งานได้\n🚀 help ; ดูรายการคำสั่งทั้งหมด\n🚀 Router List ;ดู Router ทั้งหมด\n🚀 Status ; แสดงสถานะของระบบ Bot\n\n🔧 Router Select, <router id> ; เลือก Router\n🔧 Router Remote, <router id> ; Remote เข้าสู่ Console ของ Router\n🔧 Router Status, <router id> ; ดูข้อมูลสถานะของ Router\n🔧 Router Config, <router id> ; เข้าสู่โหมดตั้งค่า Router\n"
                         cls.line_bot_api.reply_message(event['replyToken'],
