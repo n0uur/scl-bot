@@ -43,6 +43,7 @@ def callback():
 
 if __name__ == "__main__":
     flaskThread = threading.Thread(target=app.run)
-    syslogThread = threading.Thread(target=Syslog.startSyslog)
     flaskThread.start()
-    syslogThread.start()
+
+syslogThread = threading.Thread(target=Syslog.startSyslog)
+syslogThread.start()
