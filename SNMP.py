@@ -51,7 +51,7 @@ def setSNMP(ipAddress, communityCode, oid, value, port=161):
 
 
 def getRouterHostName(ip, communityCode):
-    return getSNMP(ip, communityCode, '.1.3.6.1.2.1.1.5.0')
+    return getSNMP(ip, communityCode, '.1.3.6.1.4.1.9.2.1.3.0')
 
 
 def setRouterHostName(ip, communityCode, hostname):
