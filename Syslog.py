@@ -13,10 +13,10 @@ class SyslogHandler(socketserver.BaseRequestHandler):
         data = bytes.decode(self.request[0].strip())
         logData = data.split("*")[-1].split(": ")
         # print(logData)
-        logTime = logData[0]
+        logTime = logData[2]
         hostName = data.split("*")[0].split(":")[1].strip()
         logMessage = ""
-        for i in logData[1:]:
+        for i in logData[3:]:
             logMessage += i
         logDataDict = {
             "time": logTime,
